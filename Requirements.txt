@@ -1,0 +1,5 @@
+tkinter
+time
+pickle
+pillow
+random
