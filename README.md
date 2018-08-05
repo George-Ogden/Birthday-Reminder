@@ -6,4 +6,6 @@ Every day, the date is displayed and you can see any upcoming birthdays over the
 
 Bugs: this has not been fully tested. 
 When you cancel adding or removing, a large grey patch appears at the bottom.
-Please comment any suggestions to fixt this.
+Please comment any suggestions to fix this.
+
+I will comment later for readability.
