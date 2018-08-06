@@ -541,7 +541,7 @@ def step1b():
     month_tick.grid(row=2,column=2)
 def check1b():
     #check the month
-    if move1 == 1:
+    if move1.get() == 1:
         for i,month in enumerate(months_arr):
             if month == bmonth.get():
                 global rem_month
