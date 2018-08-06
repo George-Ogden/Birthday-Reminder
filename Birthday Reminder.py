@@ -447,7 +447,7 @@ def step3a():
     for day in range(1,32):
         days_arr.append(day)
     if byear.get() == str(time.year) and bmonth.get() == time.month_name:
-        day_menu = ttk.OptionMenu(frame4,bday,days_arr[0],*days_arr[:time.day-1])
+        day_menu = ttk.OptionMenu(frame4,bday,days_arr[0],*days_arr[:time.date-1])
     elif bmonth.get() == "February":
         day_menu = ttk.OptionMenu(frame4,bday,days_arr[0],*days_arr[:February.day_len(add_year)])
     else:
