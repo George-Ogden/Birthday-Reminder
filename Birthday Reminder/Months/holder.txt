@@ -1,0 +1,1 @@
+This file stops the folder deleting itself (delete when code first run).
