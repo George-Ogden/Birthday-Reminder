@@ -4,6 +4,18 @@ from tkinter import ttk
 import pickle
 from time_periods import birthday
 
+#clear func
+def clear(frame):
+    if isinstance(frame,Frame):
+        #clear frame
+        for wig in frame.winfo_children():
+            wig.grid_remove()
+    else:
+        for f in frame:
+            #clear frame
+            for wig in f.winfo_children():
+                wig.grid_remove()
+
 def save(January,February,March,April,May,June,July,August,September,October,November,December):
     #save files to folder
     pickle.dump(January,open("Months/January","wb"),pickle.HIGHEST_PROTOCOL)
@@ -22,8 +34,7 @@ def save(January,February,March,April,May,June,July,August,September,October,Nov
 #frame 1
 def f1(frame1,day,tdate,month,year,color):
     #clear frame
-    for wig in frame1.winfo_children():
-        wig.grid_remove()
+    clear(frame1)
         
     #date at to
     date = StringVar()
@@ -38,9 +49,7 @@ def f1(frame1,day,tdate,month,year,color):
 
 #frame 2
 def f2(frame2,colour,year,month):
-    #clear frame
-    for wig in frame2.winfo_children():
-        wig.grid_remove()
+    clear(frame2)
         
     #days of the week at top
     Mon = Label(frame2,text="M")
@@ -58,7 +67,7 @@ def f2(frame2,colour,year,month):
         week1 = IntVar()
         week2 = IntVar()
         #get the colours and numbers
-        week1,week2,c1,c2 = year.months[month].get_dates(i)
+        week1,week2,c1,c2 = year.months[month].get_dates(i,year)
         Label(frame2,text=week1,fg=c1).grid(row=3,column=2*i+1,padx=10,pady=5)
         Label(frame2,text=week2,fg=c2).grid(row=5,column=2*i+1,padx=15,pady=5)
         #separators
@@ -70,9 +79,7 @@ def f2(frame2,colour,year,month):
     ttk.Separator(frame2,orient="horizontal").grid(row=6,column=0,columnspan=16,padx=3,pady=0,stick="EW")
 
 def f3(frame3,day_length,colour,info,image):
-    #clear frame
-    for wig in frame3.winfo_children():
-        wig.grid_remove()
+    clear(frame3)
         
     #happy birthday
     if day_length > 0:
@@ -113,12 +120,3 @@ def f3(frame3,day_length,colour,info,image):
 #add birthday
 def add_birthday(name,year,month,date,image,colour,info):
     info.months[month].days[date-1].add_birthday(birthday(name,year,month,date,image,colour))
-    
-
-
-#cancel button func
-def clear(frame5):
-    #clear frame 5
-    for wig in frame5.winfo_children():
-        wig.grid_remove()
-        

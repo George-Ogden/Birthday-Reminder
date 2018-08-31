@@ -9,7 +9,9 @@ import random
 #find the Time and declare it
 Time = Time.Time()
 months_array = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-
+#define a colour
+global colour
+colour = "default"
 #year object
 class year:
     def __init__(self):
@@ -33,9 +35,8 @@ def configure():
         #choose random birthday
         random.shuffle(info.today.day)
         colour = info.today.day[0].colour
-    else:
-        colour = "black"
-    #create label
+    elif colour == "default":
+        colour = random.choice(["red","green","blue","brown","orange","purple","lime","cyan","maroon","indigo"])
 
 
 #create GUI
@@ -159,9 +160,9 @@ def step2a():
         months_arr.append(month.capitalize())
     if byear.get() == str(Time.year):
         #slice to current month (no future bithdays)
-        month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[0],*months_arr[:Time.month+1])
+        month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[Time.month],*months_arr[:Time.month+1])
     else:
-        month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[0],*months_arr)
+        month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[Time.month],*months_arr)
     month_menu.grid(row=3,column=3,pady=5,padx=5)
     global move1, month_tick
     move1 = IntVar()
@@ -195,7 +196,7 @@ def step3a():
         days_arr.append(day)
     if byear.get() == str(Time.year) and bmonth.get() == Time.month_name:
         #slice at the present
-        day_menu = ttk.OptionMenu(frame5,bday,days_arr[0],*days_arr[:Time.date])
+        day_menu = ttk.OptionMenu(frame5,bday,days_arr[Time.date-1],*days_arr[:Time.date])
     elif bmonth.get() == "February":
         #make sure the date exists
         day_menu = ttk.OptionMenu(frame5,bday,days_arr[0],*days_arr[:February.day_len(add_year)])

@@ -49,31 +49,28 @@ class month:
         self.length = days
         for i in range(days):
             self.days.append(day())
-    def get_dates(self,i):
+    def get_dates(self,i,info):
         #get first date and colour
         self.date = Time.date - Time.day + i
         if self.date < 1:
             #if the date < 1, it is in the previous month
             self.x = info.months[Time.month-1].length + self.date
             if len(info.months[Time.month-1].days[self.x-1].day)>0:
-                random.shuffle(info.months[Time.month-1].days[self.x-1].day)
-                self.colour1 = info.months[Time.month-1].days[self.x-1].day[0].colour
+                self.colour1 = random.choice(info.months[Time.month-1].days[self.x-1].day).colour
             else:
                 self.colour1 = "black"
         elif self.date > self.length:
             #if the date > length of month, it is in the next month
             self.x = self.date % self.length
             if len(info.months[Time.month+1].days[self.x-1].day)>0:
-                random.shuffle(info.months[Time.month+1].days[self.x-1].day)
-                self.colour1 = info.months[Time.month+1].days[self.x-1].day[0].colour
+                self.colour1 = random.choice(info.months[Time.month+1].days[self.x-1].day).colour
             else:
                 self.colour1 = "black"
         else:
             #current month
             self.x = self.date
             if len(self.days[self.date-1].day)>0:
-                random.shuffle(self.days[self.x-1].day)
-                self.colour1 = self.days[self.x-1].day[0].colour
+                self.colour1 = random.choice(self.days[self.x-1].day).colour
             else:
                 self.colour1 = "black"
         #get second date and colour
@@ -82,16 +79,14 @@ class month:
             #if the date > length of month, it is in the next month
             self.y = self.date % self.length
             if len(info.months[Time.month+1].days[self.y-1].day)>0:
-                random.shuffle(info.months[Time.month+1].days[self.y-1].day)
-                self.colour2 = info.months[Time.month+1].days[self.y-1].day[0].colour
+                self.colour2 = random.choice(info.months[Time.month+1].days[self.y-1].day).colour
             else:
                 self.colour2 = "black"
         else:
             #current month
             self.y = self.date
             if len(self.days[self.y-1].day)>0:
-                random.shuffle(self.days[self.y-1].day)
-                self.colour2 = self.days[self.y-1].day[0].colour
+                self.colour2 = random.choice(self.days[self.y-1].day).colour
             else:
                 self.colour2 = "black"
         #return colour and dates
