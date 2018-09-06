@@ -88,7 +88,7 @@ def f3(frame3,day_length,colour,info,image):
         
         for i,person in enumerate(info.today.day):
             #text
-            name_label = Label(frame3,text="{name} is {age} years old today".format(**person.dict),fg=person.colour)
+            name_label = Label(frame3,text="{name} is {age} years old today".format(**person.__dict__),fg=person.colour)
             #find image
             if person.image == "Flowers":
                 cimage = image[0]

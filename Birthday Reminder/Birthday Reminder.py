@@ -47,7 +47,7 @@ def reset():
     f1(frame1,Time.day_name,Time.date,Time.month_name,Time.year,colour)
     f2(frame2,colour,info,Time.month)
     f3(frame3,day_length,colour,info,[Flowers,Cake,Present,Balloons])
-    f5()
+    f4and5()
 
 configure()
 #label with a frame
@@ -80,29 +80,31 @@ def choose():
     #clear
     clear(frame5)
     if option.get() == "Add":
-        add()
+        step1a()
     elif option.get() == "Remove":
-        remove()
-
-#initiate sequence
-def add():
-    step1a()
-def remove():
-    step1b()
+        step1b()
+    elif option.get() == "View":
+        step1c()
 
 #frame 5
-def f5():
+def f4and5(x=True):
     #clear
     clear(frame5)
     #options choice
-    options = ["Add","Remove"]
     global option
-    option = StringVar()
-    add_del = ttk.OptionMenu(frame4,option,options[0],*options)
-    add_del.grid(row=0,column=0,pady=5)
-    #submit button
-    submit1 = Button(frame4,text="Enter",command=choose)
-    submit1.grid(row=0,column=1)
+    try:
+        #if it exists, reset
+        option.set("Add")
+    except:
+        if x:
+            #otherwise, create it
+            options = ["Add","View","Remove"]
+            option = StringVar()
+            add_del = ttk.OptionMenu(frame4,option,options[0],*options)
+            add_del.grid(row=0,column=0,pady=5)
+            #submit button
+            submit1 = Button(frame4,text="Enter",command=choose)
+            submit1.grid(row=0,column=1)
 
 #add sequence
 def step1a():
@@ -270,7 +272,7 @@ def step4a():
     #option to save and move on
     finish = Button(frame5,text="Save",command=lambda:b_save(frame5,bimage,bcolour,bname,add_year,add_month,add_day,info),fg=colour)
     #option to abort
-    stop = Button(frame5,text="Cancel",command=lambda:clear(frame5),fg=colour)
+    stop = Button(frame5,text="Cancel",command=lambda:f4and5(False),fg=colour)
     stop.grid(column=6,row=7)
     finish.grid(column=5,row=7)
 
@@ -285,7 +287,7 @@ def step1b():
     for month in months_array:
         months_arr.append(month.capitalize())
     #choose months
-    month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[0],*months_arr)
+    month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[Time.month],*months_arr)
     month_menu.grid(row=2,column=1,pady=5,padx=5)
     #confirm checkbutton
     global move1, month_tick
@@ -338,27 +340,105 @@ def step3b():
     day_label = label(frame5,bday.get())
     day_label.grid(2,3,20,1)
     #abort button
-    stop = Button(frame5,text="Cancel",command=lambda:clear(frame5),fg=colour)
+    stop = Button(frame5,text="Cancel",command=lambda:f4and5(False),fg=colour)
     #remove button
     submit = Button(frame5,text="Delete",command=lambda:delete(info),fg=colour)
     #list of birthdays on that day
     if len(info.months[rem_month].days[rem_day-1].day) > 0:
-        stop.grid(column=4,row=3,pady=5)
+        stop.grid(column=4,row=4,pady=5)
         global pers
         pers = StringVar()
         births = []
         #give name and age
         for person in info.months[rem_month].days[rem_day-1].day:
-            births.append("{name} ({age})".format(**person.dict))
+            births.append("{name} ({age})".format(**person.__dict__))
         bremove = ttk.OptionMenu(frame5,pers,births[0],*births)
-        bremove.grid(column=1,row=3)
-        submit.grid(column=3,row=3)
+        blabel = Label(frame5,text="Please, select birthday to remove:",fg=colour)
+        blabel.grid(column=1, row=3)
+        bremove.grid(column=1,row=4)
+        submit.grid(column=3,row=4)
     else:
         #display error message and cancel button
         error = Label(frame5,text="No birthdays found",fg="red")
         error.grid(column=1,row=3,pady=5)
         stop.grid(column=3,row=3,pady=5)
 
+#view sequence
+def step1c():
+    month_label = Label(frame5,text="Month",fg=colour)
+    month_label.grid(row=1,column=1,padx=5,pady=0)
+    global cmonth,months_arr
+    cmonth = StringVar()
+    #create list of months
+    months_arr = []
+    for month in months_array:
+        months_arr.append(month.capitalize())
+    #choose months
+    month_menu = ttk.OptionMenu(frame5,cmonth,months_arr[Time.month],*months_arr)
+    month_menu.grid(row=2,column=1,pady=5,padx=5)
+    #confirm checkbutton
+    global move1, month_tick
+    move1 = IntVar()
+    move1.set(0)
+    month_tick = Checkbutton(frame5,variable=move1,command=check1c)
+    month_tick.grid(row=2,column=2)
+def check1c():
+    #check the month
+    if move1.get() == 1:
+        for i,month in enumerate(months_arr):
+            if month == cmonth.get():
+                global rem_month
+                #save the month as an integer
+                rem_month = i
+                step2c()
+def step2c():
+    day_label = Label(frame5,text="Day",fg=colour)
+    day_label.grid(row=1,column=3,padx=5,pady=0)
+    #disable month confirm
+    month_tick.config(state="disabled")
+    #stop editing month
+    month_label = label(frame5,cmonth.get())
+    month_label.grid(2,1,45,1)
+    global cday,day_arr
+    cday = IntVar()
+    days_arr = []
+    #days array
+    for day in range(info.months[rem_month].length):
+        days_arr.append(day+1)
+    day_menu = ttk.OptionMenu(frame5,cday,days_arr[0],*days_arr[:info.months[rem_month].length])
+    day_menu.grid(row=2,column=3,pady=5,padx=5)
+    global move2, day_tick
+    move2 = IntVar()
+    move2.set(0)
+    #day confirm checkbutton
+    day_tick = Checkbutton(frame5,variable=move2,command=check2c)
+    day_tick.grid(row=2,column=4)
+def check2c():
+    #check the day
+    if move2.get() == 1:
+        global rem_day
+        #save day
+        rem_day = cday.get()
+        step3c()
+def step3c():
+    #disable day confirm
+    day_tick.config(state="disabled")
+    #stop editing day
+    day_label = label(frame5,cday.get())
+    day_label.grid(2,3,20,1)
+    #finish button
+    stop = Button(frame5,text="Done",command=lambda:f4and5(False),fg=colour)
+    #list of birthdays on that day
+    if len(info.months[rem_month].days[rem_day-1].day) > 0:
+        #show name and age
+        for i,person in enumerate(info.months[rem_month].days[rem_day-1].day):
+            Label(frame5,text="{name} ({age})".format(**person.__dict__),fg=person.colour).grid(column=1,row=3+i)
+        stop.grid(column=3,row=2+(len(info.months[rem_month].days[rem_day-1].day)),pady=5)
+    else:
+        #display error message and cancel button
+        error = Label(frame5,text="No birthdays found",fg="red")
+        error.grid(column=1,row=3,pady=5)
+        stop.grid(column=3,row=3,pady=5)
 #save birthday
 def b_save(frame5,image,col,name,year,month,day,info):
     #create error message
@@ -375,7 +455,7 @@ def b_save(frame5,image,col,name,year,month,day,info):
 #delete birthday
 def delete(info):
     for i,per in enumerate(info.months[rem_month].days[rem_day-1].day):
-        if "{name} ({age})".format(**per.dict) == pers.get():
+        if "{name} ({age})".format(**per.__dict__) == pers.get():
             del info.months[rem_month].days[rem_day-1].day[i]
     reset()
 
@@ -420,7 +500,7 @@ def start():
     f1(frame1,Time.day_name,Time.date,Time.month_name,Time.year,colour)
     f2(frame2,colour,info,Time.month)
     f3(frame3,day_length,colour,info,[Flowers,Cake,Present,Balloons])
-    f5()
+    f4and5()
 
 #get everything ready
 start()
