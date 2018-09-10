@@ -91,6 +91,22 @@ class month:
                 self.colour2 = "black"
         #return colour and dates
         return self.x,self.y,self.colour1,self.colour2
+    def get_future(self,info):
+        birthdays = []
+        for i in range(0,14):
+            #get first date and colour
+            self.date = Time.date + i
+            if self.date > self.length:
+                #if the date > length of month, it is in the next month
+                self.x = self.date % self.length
+                for birth in info.months[Time.month+1].days[self.x-1].day:
+                    birthdays.append(birth)
+            else:
+                #current month
+                for birth in self.days[self.date-1].day:
+                    birthdays.append(birth)
+        print(birthdays)
+            
     
     def day_len(self,year):
     #work out if it is a leap year
