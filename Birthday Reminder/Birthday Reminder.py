@@ -23,8 +23,6 @@ class year:
 #get months
 January,February,March,April,May,June,July,August,September,October,November,December = load()
 
-info = year()
-
 #set up variables
 def configure():
     global day_length,colour
@@ -351,7 +349,7 @@ def step3b():
         births = []
         #give name and age
         for person in info.months[rem_month].days[rem_day-1].day:
-            births.append("{name} ({age})".format(**person.__dict__))
+            births.append(str(person))
         bremove = ttk.OptionMenu(frame5,pers,births[0],*births)
         blabel = Label(frame5,text="Please, select birthday to remove:",fg=colour)
         blabel.grid(column=1, row=3)
@@ -432,7 +430,7 @@ def step3c():
     if len(info.months[rem_month].days[rem_day-1].day) > 0:
         #show name and age
         for i,person in enumerate(info.months[rem_month].days[rem_day-1].day):
-            Label(frame5,text="{name} ({age})".format(**person.__dict__),fg=person.colour).grid(column=1,row=3+i)
+            Label(frame5,text=str(person),fg=person.colour).grid(column=1,row=3+i)
         stop.grid(column=3,row=2+(len(info.months[rem_month].days[rem_day-1].day)),pady=5)
     else:
         #display error message and cancel button
@@ -455,7 +453,7 @@ def b_save(frame5,image,col,name,year,month,day,info):
 #delete birthday
 def delete(info):
     for i,per in enumerate(info.months[rem_month].days[rem_day-1].day):
-        if "{name} ({age})".format(**per.__dict__) == pers.get():
+        if str(per) == pers.get():
             del info.months[rem_month].days[rem_day-1].day[i]
     reset()
 
