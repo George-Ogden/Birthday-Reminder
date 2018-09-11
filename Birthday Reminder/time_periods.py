@@ -31,7 +31,7 @@ class birthday:
             return 0
         #results are inverted
     def __str__(self):
-        return "{name} ({year})".format(**self.__dict__)
+        return "{name} ({year})".format(**self.__dict__) #str(birthday) function
 
 #day
 class day:
@@ -96,7 +96,7 @@ class month:
     def get_future(self,year):
         birthdays = []
         for i in range(0,14):
-            #get first date and colour
+            #find date
             self.date = Time.date + i
             if self.date > self.length:
                 #if the date > length of month, it is in the next month
@@ -107,7 +107,7 @@ class month:
                 #current month
                 for birth in self.days[self.date-1].day:
                     birthdays.append(birth)
-        return birthdays
+        return birthdays #return list of birthdays
             
     
     def day_len(self,year):
