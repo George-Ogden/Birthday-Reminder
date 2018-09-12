@@ -23,6 +23,8 @@ class year:
 #get months
 January,February,March,April,May,June,July,August,September,October,November,December = load()
 
+#create year
+info = year()
 #set up variables
 def configure():
     global day_length,colour
