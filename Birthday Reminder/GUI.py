@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 from time_periods import birthday
+import random
 
 #clear func
 def clear(frame):
@@ -42,9 +43,9 @@ def f1(frame1,day,tdate,month,year,color):
     date_label = Label(frame1,text=date.get(),fg=color)
     date_label.grid(row=1,column=1,padx=10,pady=5)
     #separators
-    ttk.Separator(frame1,orient="vertical").grid(row=0,column=0,padx=(0,150),pady=0,stick="NS",rowspan=3)
+    ttk.Separator(frame1,orient="vertical").grid(row=0,column=0,padx=(0,125),pady=0,stick="NS",rowspan=3)
     ttk.Separator(frame1,orient="horizontal").grid(row=0,column=0,columnspan=3,padx=0,pady=0,stick="EW")
-    ttk.Separator(frame1,orient="vertical").grid(row=0,column=2,padx=(150,0),pady=0,stick="NS",rowspan=3)
+    ttk.Separator(frame1,orient="vertical").grid(row=0,column=2,padx=(125,0),pady=0,stick="NS",rowspan=3)
     ttk.Separator(frame1,orient="horizontal").grid(row=3,column=0,columnspan=3,padx=0,pady=0,stick="EW")
 
 #frame 2
@@ -120,3 +121,26 @@ def f3(frame3,day_length,colour,info,image):
 #add birthday
 def add_birthday(name,year,month,date,image,colour,info):
     info.months[month].days[date-1].add_birthday(birthday(name,year,month,date,image,colour))
+
+#create frame 4
+def f4(frame,list):
+    if len(list) == 0:
+        #if the length is 0, there are no upcoming birthdays
+        upcoming = "No upcoming birthdays!"
+    elif len(list) == 1:
+        upcoming = "The only birthday is: "
+    else:
+        #create the start
+        upcoming = "Upcoming birthdays are: "
+        for i,person in enumerate(list):
+            if i == len(list)-1:
+                #last item
+                upcoming += str(person) + "."
+            elif i == len(list)-2:
+                #penultimate item
+                upcoming += str(person) + " and "
+            else:
+                #other items
+                upcoming += str(person) + ", "
+    label = Label(frame,text=upcoming,fg=random.choice(list).colour)
+    label.grid(row=0,column=0)

@@ -27,7 +27,7 @@ January,February,March,April,May,June,July,August,September,October,November,Dec
 info = year()
 #set up variables
 def configure():
-    global day_length,colour
+    global day_length,colour,upcoming_list
     #set day length (birthdays today)
     day_length = len(info.today.day)
     #set text colour
@@ -37,6 +37,7 @@ def configure():
         colour = info.today.day[0].colour
     elif colour == "default":
         colour = random.choice(["red","green","blue","brown","orange","purple","lime","cyan","maroon","indigo"])
+    upcoming_list = info.months[Time.month].get_future(info)
 
 
 #create GUI
@@ -47,7 +48,8 @@ def reset():
     f1(frame1,Time.day_name,Time.date,Time.month_name,Time.year,colour)
     f2(frame2,colour,info,Time.month)
     f3(frame3,day_length,colour,info,[Flowers,Cake,Present,Balloons])
-    f4and5()
+    f4(frame4,upcoming_list)
+    f5and6()
 
 configure()
 #label with a frame
@@ -72,13 +74,14 @@ def reset_time():
     f1(frame1,Time.day_name,Time.date,Time.month_name,Time.year,colour)
     f2(frame2,colour,info,Time.month)
     f3(frame3,day_length,colour,info,[Flowers,Cake,Present,Balloons])
+    f4(frame4,upcoming_list)
     #check again in a minute
     root.after(60000, reset_time)
 
 #result of choosing add/remove
 def choose():
     #clear
-    clear(frame5)
+    clear(frame6)
     if option.get() == "Add":
         step1a()
     elif option.get() == "Remove":
@@ -87,11 +90,13 @@ def choose():
         step1c()
 
 #frame 5
-def f4and5(x=True):
+def f5and6(x=True):
     #clear
-    clear(frame5)
+    clear(frame6)
     #options choice
     global option
+    blank_label = Label(frame6,text="",fg="#F0F0F0")
+    blank_label.grid(row=0,column=0)
     try:
         #if it exists, reset
         option.set("Add")
@@ -100,32 +105,32 @@ def f4and5(x=True):
             #otherwise, create it
             options = ["Add","View","Remove"]
             option = StringVar()
-            add_del = ttk.OptionMenu(frame4,option,options[0],*options)
+            add_del = ttk.OptionMenu(frame5,option,options[0],*options)
             add_del.grid(row=0,column=0,pady=5)
             #submit button
-            submit1 = Button(frame4,text="Enter",command=choose)
+            submit1 = Button(frame5,text="Enter",command=choose)
             submit1.grid(row=0,column=1)
 
 #add sequence
 def step1a():
     #ask for the year
-    year_label = Label(frame5,text="Year",fg=colour)
+    year_label = Label(frame6,text="Year",fg=colour)
     year_label.grid(row=2,column=1,pady=0)
     global byear
     byear = StringVar()
     #year entry
-    year_entry = Entry(frame5,textvariable=byear)
+    year_entry = Entry(frame6,textvariable=byear)
     year_entry.grid(row=3,column=1)
     global move, year_tick
     move = IntVar()
     move.set(0)
     #check button to confirm year
-    year_tick = Checkbutton(frame5,variable=move,command=check1a)
+    year_tick = Checkbutton(frame6,variable=move,command=check1a)
     year_tick.grid(row=3,column=2)
 def check1a():
     #check the year
     if move.get() == 1:
-        error1 = Label(frame5,text="Please enter a valid year between 1900 and now.",wraplength=150,fg="red")
+        error1 = Label(frame6,text="Please enter a valid year between 1900 and now.",wraplength=150,fg="red")
         try:
             #check the year is reasonable
             global add_year
@@ -147,12 +152,12 @@ def check1a():
             move.set(0)
 def step2a():
     #ask for the month
-    month_label = Label(frame5,text="Month",fg=colour)
+    month_label = Label(frame6,text="Month",fg=colour)
     month_label.grid(row=2,column=3,padx=5,pady=0)
     #disable year confirm
     year_tick.config(state="disabled")
     #stop editing year
-    year_label = label(frame5,byear.get())
+    year_label = label(frame6,byear.get())
     year_label.grid(3,1,45,1)
     global bmonth,months_arr
     bmonth = StringVar()
@@ -162,15 +167,15 @@ def step2a():
         months_arr.append(month.capitalize())
     if byear.get() == str(Time.year):
         #slice to current month (no future bithdays)
-        month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[Time.month],*months_arr[:Time.month+1])
+        month_menu = ttk.OptionMenu(frame6,bmonth,months_arr[Time.month],*months_arr[:Time.month+1])
     else:
-        month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[Time.month],*months_arr)
+        month_menu = ttk.OptionMenu(frame6,bmonth,months_arr[Time.month],*months_arr)
     month_menu.grid(row=3,column=3,pady=5,padx=5)
     global move1, month_tick
     move1 = IntVar()
     move1.set(0)
     #confirm checkbutton
-    month_tick = Checkbutton(frame5,variable=move1,command=check2a)
+    month_tick = Checkbutton(frame6,variable=move1,command=check2a)
     month_tick.grid(row=3,column=4)
 def check2a():
     #check the month
@@ -183,12 +188,12 @@ def check2a():
                 step3a()
 def step3a():
     #ask for the day
-    day_label = Label(frame5,text="Day",fg=colour)
+    day_label = Label(frame6,text="Day",fg=colour)
     day_label.grid(row=2,column=5,padx=5,pady=0)
     #disable year confirm
     month_tick.config(state="disabled")
     #stop editing month
-    month_label = label(frame5,bmonth.get())
+    month_label = label(frame6,bmonth.get())
     month_label.grid(3,3,45,1)
     global bday,day_arr
     bday = IntVar()
@@ -198,19 +203,19 @@ def step3a():
         days_arr.append(day)
     if byear.get() == str(Time.year) and bmonth.get() == Time.month_name:
         #slice at the present
-        day_menu = ttk.OptionMenu(frame5,bday,days_arr[Time.date-1],*days_arr[:Time.date])
+        day_menu = ttk.OptionMenu(frame6,bday,days_arr[Time.date-1],*days_arr[:Time.date])
     elif bmonth.get() == "February":
         #make sure the date exists
-        day_menu = ttk.OptionMenu(frame5,bday,days_arr[0],*days_arr[:February.day_len(add_year)])
+        day_menu = ttk.OptionMenu(frame6,bday,days_arr[0],*days_arr[:February.day_len(add_year)])
     else:
         #find length of month
-        day_menu = ttk.OptionMenu(frame5,bday,days_arr[0],*days_arr[:info.months[add_month].length])
+        day_menu = ttk.OptionMenu(frame6,bday,days_arr[0],*days_arr[:info.months[add_month].length])
     day_menu.grid(row=3,column=5,pady=5,padx=5)
     global move2, day_tick
     move2 = IntVar()
     move2.set(0)
     #checkbutton to confirm
-    day_tick = Checkbutton(frame5,variable=move2,command=check3a)
+    day_tick = Checkbutton(frame6,variable=move2,command=check3a)
     day_tick.grid(row=3,column=6)
 def check3a():
     #check the day
@@ -223,19 +228,19 @@ def step4a():
     #disable day confirm
     day_tick.config(state="disabled")
     #stop editing day
-    day_label = label(frame5,bday.get())
+    day_label = label(frame6,bday.get())
     day_label.grid(3,5,20,1)
     #name entry
-    name_label = Label(frame5,text="Name",fg=colour)
+    name_label = Label(frame6,text="Name",fg=colour)
     name_label.grid(row=4,column=1,padx=5,pady=0)
     global bname
     bname = StringVar()
-    name_entry = Entry(frame5,textvariable=bname)
+    name_entry = Entry(frame6,textvariable=bname)
     name_entry.grid(row=5,column=1)
     #image choice
-    image_label = Label(frame5,text="Image",fg=colour)
+    image_label = Label(frame6,text="Image",fg=colour)
     image_label.grid(row=6,column=1)
-    images = Frame(frame5)
+    images = Frame(frame6)
     images.grid(row=7,column=1,columnspan=2,rowspan=2)
     global bimage
     #radiobutton options
@@ -254,9 +259,9 @@ def step4a():
     ttk.Separator(images,orient="horizontal").grid(row=0,column=0,columnspan=4,padx=0,pady=0,stick="EW")
     ttk.Separator(images,orient="horizontal").grid(row=3,column=0,columnspan=4,padx=0,pady=0,stick="EW")
     #colour choice
-    colour_label = Label(frame5,text="Colour",fg=colour)
+    colour_label = Label(frame6,text="Colour",fg=colour)
     colour_label.grid(row=4,column=3)
-    colours = Frame(frame5)
+    colours = Frame(frame6)
     colours.grid(row=5,column=3,columnspan=4,rowspan=2)
     global bcolour
     bcolour = StringVar()
@@ -270,15 +275,15 @@ def step4a():
     ttk.Separator(colours,orient="horizontal").grid(row=0,column=0,columnspan=6,padx=0,pady=0,stick="EW")
     ttk.Separator(colours,orient="horizontal").grid(row=3,column=0,columnspan=6,padx=0,pady=0,stick="EW")
     #option to save and move on
-    finish = Button(frame5,text="Save",command=lambda:b_save(frame5,bimage,bcolour,bname,add_year,add_month,add_day,info),fg=colour)
+    finish = Button(frame6,text="Save",command=lambda:b_save(frame6,bimage,bcolour,bname,add_year,add_month,add_day,info),fg=colour)
     #option to abort
-    stop = Button(frame5,text="Cancel",command=lambda:f4and5(False),fg=colour)
+    stop = Button(frame6,text="Cancel",command=lambda:f5and6(False),fg=colour)
     stop.grid(column=6,row=7)
     finish.grid(column=5,row=7)
 
 #remove sequence
 def step1b():
-    month_label = Label(frame5,text="Month",fg=colour)
+    month_label = Label(frame6,text="Month",fg=colour)
     month_label.grid(row=1,column=1,padx=5,pady=0)
     global bmonth,months_arr
     bmonth = StringVar()
@@ -287,13 +292,13 @@ def step1b():
     for month in months_array:
         months_arr.append(month.capitalize())
     #choose months
-    month_menu = ttk.OptionMenu(frame5,bmonth,months_arr[Time.month],*months_arr)
+    month_menu = ttk.OptionMenu(frame6,bmonth,months_arr[Time.month],*months_arr)
     month_menu.grid(row=2,column=1,pady=5,padx=5)
     #confirm checkbutton
     global move1, month_tick
     move1 = IntVar()
     move1.set(0)
-    month_tick = Checkbutton(frame5,variable=move1,command=check1b)
+    month_tick = Checkbutton(frame6,variable=move1,command=check1b)
     month_tick.grid(row=2,column=2)
 def check1b():
     #check the month
@@ -305,12 +310,12 @@ def check1b():
                 rem_month = i
                 step2b()
 def step2b():
-    day_label = Label(frame5,text="Day",fg=colour)
+    day_label = Label(frame6,text="Day",fg=colour)
     day_label.grid(row=1,column=3,padx=5,pady=0)
     #disable month confirm
     month_tick.config(state="disabled")
     #stop editing month
-    month_label = label(frame5,bmonth.get())
+    month_label = label(frame6,bmonth.get())
     month_label.grid(2,1,45,1)
     global bday,day_arr
     bday = IntVar()
@@ -318,13 +323,13 @@ def step2b():
     #days array
     for day in range(info.months[rem_month].length):
         days_arr.append(day+1)
-    day_menu = ttk.OptionMenu(frame5,bday,days_arr[0],*days_arr[:info.months[rem_month].length])
+    day_menu = ttk.OptionMenu(frame6,bday,days_arr[0],*days_arr[:info.months[rem_month].length])
     day_menu.grid(row=2,column=3,pady=5,padx=5)
     global move2, day_tick
     move2 = IntVar()
     move2.set(0)
     #day confirm checkbutton
-    day_tick = Checkbutton(frame5,variable=move2,command=check2b)
+    day_tick = Checkbutton(frame6,variable=move2,command=check2b)
     day_tick.grid(row=2,column=4)
 def check2b():
     #check the day
@@ -337,12 +342,12 @@ def step3b():
     #disable day confirm
     day_tick.config(state="disabled")
     #stop editing day
-    day_label = label(frame5,bday.get())
+    day_label = label(frame6,bday.get())
     day_label.grid(2,3,20,1)
     #abort button
-    stop = Button(frame5,text="Cancel",command=lambda:f4and5(False),fg=colour)
+    stop = Button(frame6,text="Cancel",command=lambda:f5and6(False),fg=colour)
     #remove button
-    submit = Button(frame5,text="Delete",command=lambda:delete(info),fg=colour)
+    submit = Button(frame6,text="Delete",command=lambda:delete(info),fg=colour)
     #list of birthdays on that day
     if len(info.months[rem_month].days[rem_day-1].day) > 0:
         stop.grid(column=4,row=4,pady=5)
@@ -352,20 +357,20 @@ def step3b():
         #give name and age
         for person in info.months[rem_month].days[rem_day-1].day:
             births.append(str(person))
-        bremove = ttk.OptionMenu(frame5,pers,births[0],*births)
-        blabel = Label(frame5,text="Please, select birthday to remove:",fg=colour)
+        bremove = ttk.OptionMenu(frame6,pers,births[0],*births)
+        blabel = Label(frame6,text="Please, select birthday to remove:",fg=colour)
         blabel.grid(column=1, row=3)
         bremove.grid(column=1,row=4)
         submit.grid(column=3,row=4)
     else:
         #display error message and cancel button
-        error = Label(frame5,text="No birthdays found",fg="red")
+        error = Label(frame6,text="No birthdays found",fg="red")
         error.grid(column=1,row=3,pady=5)
         stop.grid(column=3,row=3,pady=5)
 
 #view sequence
 def step1c():
-    month_label = Label(frame5,text="Month",fg=colour)
+    month_label = Label(frame6,text="Month",fg=colour)
     month_label.grid(row=1,column=1,padx=5,pady=0)
     global cmonth,months_arr
     cmonth = StringVar()
@@ -374,13 +379,13 @@ def step1c():
     for month in months_array:
         months_arr.append(month.capitalize())
     #choose months
-    month_menu = ttk.OptionMenu(frame5,cmonth,months_arr[Time.month],*months_arr)
+    month_menu = ttk.OptionMenu(frame6,cmonth,months_arr[Time.month],*months_arr)
     month_menu.grid(row=2,column=1,pady=5,padx=5)
     #confirm checkbutton
     global move1, month_tick
     move1 = IntVar()
     move1.set(0)
-    month_tick = Checkbutton(frame5,variable=move1,command=check1c)
+    month_tick = Checkbutton(frame6,variable=move1,command=check1c)
     month_tick.grid(row=2,column=2)
 def check1c():
     #check the month
@@ -392,12 +397,12 @@ def check1c():
                 rem_month = i
                 step2c()
 def step2c():
-    day_label = Label(frame5,text="Day",fg=colour)
+    day_label = Label(frame6,text="Day",fg=colour)
     day_label.grid(row=1,column=3,padx=5,pady=0)
     #disable month confirm
     month_tick.config(state="disabled")
     #stop editing month
-    month_label = label(frame5,cmonth.get())
+    month_label = label(frame6,cmonth.get())
     month_label.grid(2,1,45,1)
     global cday,day_arr
     cday = IntVar()
@@ -405,13 +410,13 @@ def step2c():
     #days array
     for day in range(info.months[rem_month].length):
         days_arr.append(day+1)
-    day_menu = ttk.OptionMenu(frame5,cday,days_arr[0],*days_arr[:info.months[rem_month].length])
+    day_menu = ttk.OptionMenu(frame6,cday,days_arr[0],*days_arr[:info.months[rem_month].length])
     day_menu.grid(row=2,column=3,pady=5,padx=5)
     global move2, day_tick
     move2 = IntVar()
     move2.set(0)
     #day confirm checkbutton
-    day_tick = Checkbutton(frame5,variable=move2,command=check2c)
+    day_tick = Checkbutton(frame6,variable=move2,command=check2c)
     day_tick.grid(row=2,column=4)
 def check2c():
     #check the day
@@ -424,25 +429,25 @@ def step3c():
     #disable day confirm
     day_tick.config(state="disabled")
     #stop editing day
-    day_label = label(frame5,cday.get())
+    day_label = label(frame6,cday.get())
     day_label.grid(2,3,20,1)
     #finish button
-    stop = Button(frame5,text="Done",command=lambda:f4and5(False),fg=colour)
+    stop = Button(frame6,text="Done",command=lambda:f5and6(False),fg=colour)
     #list of birthdays on that day
     if len(info.months[rem_month].days[rem_day-1].day) > 0:
         #show name and age
         for i,person in enumerate(info.months[rem_month].days[rem_day-1].day):
-            Label(frame5,text=str(person),fg=person.colour).grid(column=1,row=3+i)
+            Label(frame6,text=str(person),fg=person.colour).grid(column=1,row=3+i)
         stop.grid(column=3,row=2+(len(info.months[rem_month].days[rem_day-1].day)),pady=5)
     else:
         #display error message and cancel button
-        error = Label(frame5,text="No birthdays found",fg="red")
+        error = Label(frame6,text="No birthdays found",fg="red")
         error.grid(column=1,row=3,pady=5)
         stop.grid(column=3,row=3,pady=5)
 #save birthday
-def b_save(frame5,image,col,name,year,month,day,info):
+def b_save(frame6,image,col,name,year,month,day,info):
     #create error message
-    error2 = Label(frame5,text="Error, please select valid options",wraplength = 100,fg="red")
+    error2 = Label(frame6,text="Error, please select valid options",wraplength = 100,fg="red")
     if not((image.get() == "Flowers" or image.get() == "Cake" or image.get() == "Present" or image.get() == "Balloons") and col.get() in ["red","green","blue","brown","orange","purple","lime","cyan","maroon","indigo"] and len(name.get()) > 0):
         #if something is wrong, display error message
         error2.grid(column=3,row=7)
@@ -462,7 +467,7 @@ def delete(info):
 #create GUI
 def start():
     #declare GUI
-    global root,frame,frame1,frame2,frame3,frame4,frame5
+    global root,frame,frame1,frame2,frame3,frame4,frame5,frame6
     root = Tk()
     root.title("Birthday Reminder")
     
@@ -483,14 +488,17 @@ def start():
     frame3 = Frame(frame)
     frame3.grid(row=2,column=0)
 
-    #create a separator part way down
-    ttk.Separator(frame,orient="horizontal").grid(row=3,column=0,padx=0,pady=(2,0),stick="EW")
-
     frame4 = Frame(frame)
-    frame4.grid(row=4,column=0)
+    frame4.grid(row=3,column=0)
+    
+    #create a separator part way down
+    ttk.Separator(frame,orient="horizontal").grid(row=4,column=0,padx=0,pady=(2,0),stick="EW")
 
     frame5 = Frame(frame)
     frame5.grid(row=5,column=0)
+
+    frame6 = Frame(frame)
+    frame6.grid(row=6,column=0)
 
     for wig in frame.winfo_children():
         #padding for all frames
@@ -500,7 +508,7 @@ def start():
     f1(frame1,Time.day_name,Time.date,Time.month_name,Time.year,colour)
     f2(frame2,colour,info,Time.month)
     f3(frame3,day_length,colour,info,[Flowers,Cake,Present,Balloons])
-    f4and5()
+    f5and6()
 
 #get everything ready
 start()
@@ -513,4 +521,3 @@ reset_time()
 
 #run program
 root.mainloop()
-
