@@ -5,7 +5,6 @@ You can customise each birthday.
 Every day, the date is displayed and you can see any upcoming birthdays over the fornight. 
 
 Bugs: this has not been fully tested. 
-When you cancel adding or removing, a large grey patch appears at the bottom.
-Please comment any suggestions to fix this.
+Remember to often save a backup copy of your birthdays in case there is an error when loading the program.
 
 I have commented most of the code and there are celebrity birthdays in a separate branch.
