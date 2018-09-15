@@ -30,6 +30,8 @@ class birthday:
         else:
             return 0
         #results are inverted
+    def __str__(self):
+        return "{name} ({year})".format(**self.__dict__) #str(birthday) function
 
 #day
 class day:
@@ -49,21 +51,21 @@ class month:
         self.length = days
         for i in range(days):
             self.days.append(day())
-    def get_dates(self,i,info):
+    def get_dates(self,i,year):
         #get first date and colour
         self.date = Time.date - Time.day + i
         if self.date < 1:
             #if the date < 1, it is in the previous month
-            self.x = info.months[Time.month-1].length + self.date
-            if len(info.months[Time.month-1].days[self.x-1].day)>0:
-                self.colour1 = random.choice(info.months[Time.month-1].days[self.x-1].day).colour
+            self.x = year.months[Time.month-1].length + self.date
+            if len(year.months[Time.month-1].days[self.x-1].day)>0:
+                self.colour1 = random.choice(year.months[Time.month-1].days[self.x-1].day).colour
             else:
                 self.colour1 = "black"
         elif self.date > self.length:
             #if the date > length of month, it is in the next month
             self.x = self.date % self.length
-            if len(info.months[Time.month+1].days[self.x-1].day)>0:
-                self.colour1 = random.choice(info.months[Time.month+1].days[self.x-1].day).colour
+            if len(year.months[Time.month+1].days[self.x-1].day)>0:
+                self.colour1 = random.choice(year.months[Time.month+1].days[self.x-1].day).colour
             else:
                 self.colour1 = "black"
         else:
@@ -78,8 +80,8 @@ class month:
         if self.date > self.length:
             #if the date > length of month, it is in the next month
             self.y = self.date % self.length
-            if len(info.months[Time.month+1].days[self.y-1].day)>0:
-                self.colour2 = random.choice(info.months[Time.month+1].days[self.y-1].day).colour
+            if len(year.months[Time.month+1].days[self.y-1].day)>0:
+                self.colour2 = random.choice(year.months[Time.month+1].days[self.y-1].day).colour
             else:
                 self.colour2 = "black"
         else:
@@ -91,22 +93,22 @@ class month:
                 self.colour2 = "black"
         #return colour and dates
         return self.x,self.y,self.colour1,self.colour2
-    def get_future(self,info):
+
+    def get_future(self,year):
         birthdays = []
         for i in range(0,14):
-            #get first date and colour
+            #find date
             self.date = Time.date + i
             if self.date > self.length:
                 #if the date > length of month, it is in the next month
                 self.x = self.date % self.length
-                for birth in info.months[Time.month+1].days[self.x-1].day:
+                for birth in year.months[Time.month+1].days[self.x-1].day:
                     birthdays.append(birth)
             else:
                 #current month
                 for birth in self.days[self.date-1].day:
                     birthdays.append(birth)
-        print(birthdays)
-            
+        return birthdays #return list of birthdays            
     
     def day_len(self,year):
     #work out if it is a leap year
