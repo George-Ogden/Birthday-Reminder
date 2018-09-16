@@ -142,5 +142,9 @@ def f4(frame,list):
             else:
                 #other items
                 upcoming += str(person) + ", "
-    label = Label(frame,text=upcoming,fg=random.choice(list).colour)
+    try:
+        colour = random.choice(list).colour
+    except:
+        colour = "black"
+    label = Label(frame,text=upcoming,fg=colour)
     label.grid(row=0,column=0)
