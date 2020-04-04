@@ -89,7 +89,7 @@ def f3(frame3,day_length,colour,info,image):
         
         for i,person in enumerate(info.today.day):
             #text
-            name_label = Label(frame3,text="{name} is {age} years old today".format(**person.__dict__),fg=person.colour)
+            name_label = Label(frame3,text="{} is {} years old today".format(person.name,person.age),fg=person.colour)
             #find image
             if person.image == "Flowers":
                 cimage = image[0]
@@ -146,5 +146,5 @@ def f4(frame,list):
         colour = random.choice(list).colour
     except:
         colour = "black"
-    label = Label(frame,text=upcoming,fg=colour)
+    label = Label(frame,text=upcoming,fg=colour,wraplength=450)
     label.grid(row=0,column=0)

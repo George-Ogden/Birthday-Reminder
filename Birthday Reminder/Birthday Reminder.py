@@ -19,7 +19,7 @@ class year:
         self.months = [January,February,March,April,May,June,July,August,September,October,November,December]
         #find current day
         self.today = self.months[Time.month].days[Time.date-1]
-
+                   
 #get months
 January,February,March,April,May,June,July,August,September,October,November,December = load()
 
@@ -95,7 +95,7 @@ def f5and6(x=True):
     clear(frame6)
     #options choice
     global option
-    blank_label = Label(frame6,text="",fg="#F0F0F0")
+    blank_label = Label(frame6,text="")
     blank_label.grid(row=0,column=0)
     try:
         #if it exists, reset
