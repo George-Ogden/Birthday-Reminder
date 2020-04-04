@@ -14,8 +14,6 @@ class birthday:
         self.date = date
         self.image = image
         self.colour = colour
-        self.age = int(Time.year) - self.year - birthday.passed(self)
-        self.dict = {"name":self.name,"image":self.image,"age":self.age,"colour":self.colour}
         #check is a birthday has passed
     def passed(self):
         #check month has passed
@@ -30,6 +28,11 @@ class birthday:
         else:
             return 0
         #results are inverted
+
+    @property
+    def age(self):
+        return int(Time.year) - self.year - birthday.passed(self)
+    
     def __str__(self):
         return "{name} ({year})".format(**self.__dict__) #str(birthday) function
 
