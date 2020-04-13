@@ -34,7 +34,7 @@ class birthday:
         return int(Time.year) - self.year - birthday.passed(self)
     
     def __str__(self):
-        return "{name} ({year})".format(**self.__dict__) #str(birthday) function
+        return "{} ({})".format(self.name,self.age+1) #str(birthday) function
 
 #day
 class day:
