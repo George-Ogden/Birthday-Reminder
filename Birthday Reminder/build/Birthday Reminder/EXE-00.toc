@@ -53,7 +53,11 @@
  [],
  False,
  False,
+<<<<<<< HEAD
  1586854681,
+=======
+ 1586853716,
+>>>>>>> master
  [('run.exe',
    'c:\\users\\g0228\\appdata\\local\\programs\\python\\python38\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\run.exe',
    'EXECUTABLE')])
